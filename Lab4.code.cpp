@@ -1,15 +1,15 @@
-
 #include <iostream>
 #include <cctype>
-//char alphabet_short[33] = {"а","б","в","г","д","е","ё","ж","з","и","й","к","л","м","н","о","п","р","с","т","у","ф","х","ц","ч","ш","щ","ъ","ы","ь","э","ю","я"};
-//char alphabet_short[33] = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя";
-char alphabet_short[53] = "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz";
+char short_alphabet[53] = "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz";
+char big_alphabet[53] = "ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ";
+char alphabet[53];
 char word[1000];
-int N ;
+int registr[1000]; 
+int N;
 
 using namespace std;
 
-int encrypt(char word[1000], char alphabet_short[53], int N)//функция шифрования введенного текста
+int encrypt(char word[1000], char short_alphabet[53],char big_alphabet[53], char alphabet[53], int N)//функция шифрования введенного текста
 {
     for(int s = 0; s < 1000; s++)//цикл для смены введненного символа
     {
@@ -17,9 +17,9 @@ int encrypt(char word[1000], char alphabet_short[53], int N)//функция ш�
         {
             for(int i = 0; i < 26; i++)//цикл для сравнения введненного текста с алфавитом
             {
-                if(word[s] ==alphabet_short[i])//условие: соответствуют ли введенный символ - символу из алфавита
+                if(word[s] ==alphabet[i])//условие: соответствуют ли введенный символ - символу из алфавита
                 {
-                    word[s] = alphabet_short [i + N];//если сответствует, то введенному символу присваивается значения из алфавита с шагом N
+                    word[s] = alphabet[i + N];//если сответствует, то введенному символу присваивается значения из алфавита с шагом N
                     break;
                 }
             }
@@ -29,7 +29,7 @@ int encrypt(char word[1000], char alphabet_short[53], int N)//функция ш�
     return 0;
 }
 
-int back_encrypt(char word[1000], char alphabet_short[53], int N)//цикл дешифрования введнего текста (аналогичен обычному шифрованию)
+int back_encrypt(char word[1000], char short_alphabet[53],char big_alphabet[53], char alphabet[53], int N)//цикл дешифрования введнего текста (аналогичен обычному шифрованию)
 {
     for(int s = 0; s < 1000; s++)
     {
@@ -37,15 +37,41 @@ int back_encrypt(char word[1000], char alphabet_short[53], int N)//цикл де
         {
             for(int i = 51; i > 0; i--)
             {
-                if(word[s] ==alphabet_short[i])
+                if(word[s] ==alphabet[i])
                 {
-                    word[s] = alphabet_short [i - N];
+                    word[s] = alphabet[i - N];
                     break;
                 }
             }
         }
         
     }    
+    return 0;
+}
+
+int remem_reg(char word[1000])
+{
+    for (int i = 0; i < 1000; i++)
+    {
+        if (islower(word[i]) == 0)
+        {
+            registr[i] = 1;
+        }
+    } 
+    return 0;
+}
+
+int assignment_short(char short_alphabet[53],char alphabet[53])
+{
+    for (int i = 0; i < 53; i++)
+        alphabet[i]=short_alphabet[i];
+    return 0;
+}
+
+int assignment_big(char big_alphabet[53],char alphabet[53])
+{
+    for (int i = 0; i < 53; i++)
+        alphabet[i]=big_alphabet[i];
     return 0;
 }
 
@@ -64,15 +90,19 @@ int main()
 {   
     setlocale(LC_ALL, "rus");
     cout << "Введите предложение: ";
-    cin.getline(word,1000);
+    cin.getline(word, 1000);
     cout << "Введите шаг:  ";
     cin >> N;
-    check(word);
-    cout << "Защифрованное предложение: "; 
-    encrypt(word, alphabet_short, N);
+    cout << "Защифрованное предложение: ";
+    assignment_short(short_alphabet, alphabet);
+    encrypt(word, short_alphabet,big_alphabet,alphabet, N);
+    assignment_big(big_alphabet,alphabet);
+    encrypt(word, short_alphabet,big_alphabet,alphabet, N);
     check(word);
     cout << "Расшифрованное предложение: ";
-    back_encrypt(word, alphabet_short, N);
+    back_encrypt(word, short_alphabet,big_alphabet,alphabet, N);
+    assignment_short(short_alphabet, alphabet);
+    back_encrypt(word, short_alphabet,big_alphabet,alphabet, N);
     check(word);
     return 0;
 }
