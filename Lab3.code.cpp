@@ -5,7 +5,7 @@ char short_alphabet[53] = "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz"
 char big_alphabet[53] = "ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ";
 char alphabet[53], word[1024];
 int N, length;
-bool choice;
+int choice;
 
 using namespace std;
 
@@ -87,28 +87,28 @@ int main()
     cout << "Введите предложение латинскими символами (до 1024 символов): ";
     cin.getline(word, 1024);
     length = strlen(word);//нахождение длинны введненого текста
-    cout << "Введите шаг сдвига (до 26): ";
-    cin >> N;
-    cout << "Если вы хотите зашифровать текст - нажмите '1', если дешифровать нажмите - '2'"<<endl;
-    cout << "Ваш вариант : ";
-    cin >> choice;
-    if (choice == 1)
+    for (;;)//цикл контролирует правильные ли введены значения
     {
-        func_forward(word, big_alphabet, short_alphabet, alphabet, N, length);
-        cout << endl << "Если хотите дешифровать текст - нажмите '0'"<< endl;
+        cout << "Введите шаг сдвига (от 0 до 26): ";
+        cin >> N;
+        if ((N > 26) || (N < 0))
+            cout << "Вы ввели шаг сдвига, не входящий в возможный интревал значений. \n ";
+        else
+            break;
+    }
+    for (;;)
+    {
+        cout << "Если вы хотите зашифровать текст - нажмите '1', если дешифровать нажмите - '0', если вы хотите закончить - нажмите '2'."<<endl;
         cout << "Ваш вариант : ";
         cin >> choice;
+        if ((choice < 0) || (choice > 2))
+            cout << "Вы ввели не правильное число!"<<endl;
+        if(choice == 1)
+            func_forward(word, big_alphabet, short_alphabet, alphabet, N, length);
         if (choice == 0)
             func_back(word, big_alphabet, short_alphabet, alphabet, N, length);
-    }
-    else
-    {
-        func_back(word, big_alphabet, short_alphabet, alphabet, N, length);
-        cout << endl << "Если хотите разшифровать текст - нажмите '1'"<< endl;
-        cout << "Ваш вариант : ";
-        cin >> choice;
-        if (choice == 1)
-            func_forward(word, big_alphabet, short_alphabet, alphabet, N, length);
+        if (choice == 2)
+            break;
     }
     return 0;
 }
